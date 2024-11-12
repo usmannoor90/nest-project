@@ -30,22 +30,21 @@ export class CoinPriceService {
   private async savePrices() {
     this.logger.debug('Fetching coin prices from Moralis API...');
     try {
-      // Fetch Ethereum price (Chain ID: 0x1 for Ethereum mainnet)
+      
       const ethPriceResponse = await Moralis.EvmApi.token.getTokenPrice({
-        chain: '0x1', // Ethereum mainnet
-        address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', // Ethereum's address on mainnet
+        chain: '0x1',
+        address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', 
       });
 
-      // Fetch Polygon price (Chain ID: 0x89 for Polygon mainnet)
+      // Fetch Polygon price (Chain ID: 0x1 for Polygon mainnet)
       const polygonPriceResponse = await Moralis.EvmApi.token.getTokenPrice({
-        chain: '0x1', // Polygon mainnet
-        address: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0', // Polygon token address
+        chain: '0x1', 
+        address: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0', 
       });
 
       const ethPrice = ethPriceResponse.raw.usdPrice;
       const polygonPrice = polygonPriceResponse.raw.usdPrice;
 
-        // Create new CoinPrice entities
       const ethPriceEntity = this.coinPriceRepository.create({
         coin: 'Ethereum',
         price: ethPrice,
@@ -56,7 +55,6 @@ export class CoinPriceService {
         price: polygonPrice,
       });
 
-       // Save prices to the database
       await this.coinPriceRepository.save([ethPriceEntity, polygonPriceEntity]);
 
       this.logger.debug('Coin prices saved to database successfully.');
@@ -94,7 +92,7 @@ export class CoinPriceService {
     percentageIncrease: number,
     email: string = 'hyperhire_assignment@hyperhire.in',
   ) {
-    // Code to send an email alert
+   
     this.logger.debug(
       `Alert: ${coin} price has increased by ${percentageIncrease.toFixed(2)}%. Email sent to ${email}`,
     );
