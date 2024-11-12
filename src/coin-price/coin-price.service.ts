@@ -21,7 +21,7 @@ export class CoinPriceService {
     
   ) {}
 
-  @Cron(CronExpression.EVERY_MINUTE)
+  @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
     await this.savePrices();
     await this.checkForAlert();
