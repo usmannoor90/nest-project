@@ -2,7 +2,7 @@
 import { Module } from '@nestjs/common';
 import { PricesService } from './prices.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CoinPrice } from 'src/coin-price/coin-price.entity';
+import { CoinPrice } from 'src/cron-job/cron-job.entity';
 import { PriceAlert } from './prices.entity';
 import { PricesController } from './prices.controller';
 import { MailService } from 'src/mail/mail.service';

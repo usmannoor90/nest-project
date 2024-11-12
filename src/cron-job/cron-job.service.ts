@@ -4,15 +4,15 @@ import { Cron, CronExpression } from '@nestjs/schedule';
 // import axios from 'axios';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CoinPrice } from './coin-price.entity';
+import { CoinPrice } from './cron-job.entity';
 import Moralis from 'moralis';
 import * as moment from 'moment';
 import { PriceAlert } from 'src/prices/prices.entity';
 import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
-export class CoinPriceService {
-  private readonly logger = new Logger(CoinPriceService.name);
+export class CronJobService {
+  private readonly logger = new Logger(CronJobService.name);
 
   constructor(
     private readonly mailService: MailService,
@@ -83,8 +83,8 @@ export class CoinPriceService {
           ((latestPrice.price - oldPrice.price) / oldPrice.price) * 100;
         if (percentageIncrease > 3) {
           await this.mailService.sendAlertEmail(
-            '',
-            '',
+            'hyperhire_assignment@hyperhire.in',
+            'm.usmannoor90@gmail.com',
             coin,
             percentageIncrease,
           );
@@ -108,15 +108,11 @@ export class CoinPriceService {
         if (latestPrice && latestPrice.price >= alert.priceTarget) {
           await this.mailService.sendAlertEmail(
             alert.email,
-            alert.email,
+            'm.usmannoor90@gmail.com',
             alert.chain,
             latestPrice.price,
           );
-          // await this.sendAlertEmail(
-          //   alert.chain,
-          //   latestPrice.price,
-          //   alert.email,
-          // );
+
           alert.isTriggered = true;
           await this.priceAlertRepository.save(alert);
         }

@@ -2,7 +2,7 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Moralis from 'moralis';
-import { CoinPrice } from 'src/coin-price/coin-price.entity';
+import { CoinPrice } from 'src/cron-job/cron-job.entity';
 import { Repository } from 'typeorm';
 import { PriceAlert } from './prices.entity';
 

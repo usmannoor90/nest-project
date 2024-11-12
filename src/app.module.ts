@@ -5,9 +5,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PricesModule } from './prices/prices.module';
-import { CoinPriceModule } from './coin-price/coin-price.module';
+import { CronJobModule } from './cron-job/cron-job.module';
 import { PriceAlert } from './prices/prices.entity';
-import { CoinPrice } from './coin-price/coin-price.entity';
+import { CoinPrice } from './cron-job/cron-job.entity';
 import { MailModule } from './mail/mail.module';
 import { ConfigModule } from '@nestjs/config';
 
@@ -29,7 +29,7 @@ import { ConfigModule } from '@nestjs/config';
     }),
     ScheduleModule.forRoot(),
     PricesModule,
-    CoinPriceModule,
+    CronJobModule,
     MailModule,
   ],
   controllers: [AppController],

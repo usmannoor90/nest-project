@@ -4,7 +4,7 @@ import { AppModule } from './app.module';
 import Moralis from 'moralis';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);  
+  const app = await NestFactory.create(AppModule);
 
   await Moralis.start({
     apiKey: process.env.MOLARIS_API_KEY,

@@ -9,10 +9,10 @@ export class MailService {
   constructor(private readonly configService: ConfigService) {
     this.sesClient = new SESClient({
       credentials: {
-        accessKeyId: this.configService.get("AWS_ACCESSKEY"),
-        secretAccessKey: this.configService.get("AWS_SECRET_ACCESSKEY"),
+        accessKeyId: this.configService.get('AWS_ACCESSKEY'),
+        secretAccessKey: this.configService.get('AWS_SECRET_ACCESSKEY'),
       },
-      region: this.configService.get("AWS_REGION"),
+      region: this.configService.get('AWS_REGION'),
     });
   }
 
@@ -24,7 +24,6 @@ export class MailService {
   ) => {
     const subject = `Alert: ${coin} Price Increased by ${percentageIncrease.toFixed(2)}%`;
     const text = `The price of ${coin} has increased by ${percentageIncrease.toFixed(2)}% within the past hour.`;
-    
 
     return new SendEmailCommand({
       Destination: {
@@ -63,13 +62,14 @@ export class MailService {
     price: number,
   ) {
     const sendEmailCommand = this.createSendEmailCommand(
-      reciEmail || 'receiver@gmail.com',
-      senderEmail || 'sender@gmail.com',
-      coin || 'coin',
-      price || 45,
+      reciEmail,
+      senderEmail,
+      coin,
+      price,
     );
 
     try {
+      
       return await this.sesClient.send(sendEmailCommand);
     } catch (e) {
       console.error('Failed to send email.');

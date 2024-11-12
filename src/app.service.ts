@@ -6,7 +6,7 @@ export class AppService {
   getHello(): string {
     return 'Hello World!';
   }
-  createHello(): string{
+  createHello(): string {
     return 'Hello World created!';
   }
 }

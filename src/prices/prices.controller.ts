@@ -21,7 +21,6 @@ export class PricesController {
 
   @Get('/email')
   async Email() {
-
     return this.mailService.sendAlertEmail(
       'receiver@gmail.com',
       'sender@gmail.com',
