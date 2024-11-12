@@ -9,12 +9,14 @@ import Moralis from 'moralis';
 import * as moment from 'moment';
 import { PriceAlert } from 'src/prices/prices.entity';
 import { MailService } from 'src/mail/mail.service';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class CronJobService {
   private readonly logger = new Logger(CronJobService.name);
 
   constructor(
+    private readonly configService: ConfigService,
     private readonly mailService: MailService,
     @InjectRepository(CoinPrice)
     private coinPriceRepository: Repository<CoinPrice>,
@@ -84,7 +86,7 @@ export class CronJobService {
         if (percentageIncrease > 3) {
           await this.mailService.sendAlertEmail(
             'hyperhire_assignment@hyperhire.in',
-            'm.usmannoor90@gmail.com',
+            this.configService.get("SENDER_MAIL"),
             coin,
             percentageIncrease,
           );
@@ -108,7 +110,7 @@ export class CronJobService {
         if (latestPrice && latestPrice.price >= alert.priceTarget) {
           await this.mailService.sendAlertEmail(
             alert.email,
-            'm.usmannoor90@gmail.com',
+            this.configService.get("SENDER_MAIL"),
             alert.chain,
             latestPrice.price,
           );
