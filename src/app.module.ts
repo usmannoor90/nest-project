@@ -8,10 +8,14 @@ import { PricesModule } from './prices/prices.module';
 import { CoinPriceModule } from './coin-price/coin-price.module';
 import { PriceAlert } from './prices/prices.entity';
 import { CoinPrice } from './coin-price/coin-price.entity';
+import { MailModule } from './mail/mail.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    
+    ConfigModule.forRoot({
+      isGlobal: true,
+    }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
@@ -26,6 +30,7 @@ import { CoinPrice } from './coin-price/coin-price.entity';
     ScheduleModule.forRoot(),
     PricesModule,
     CoinPriceModule,
+    MailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -10,14 +10,25 @@ import {
 } from '@nestjs/common';
 import * as moment from 'moment';
 import { PricesService } from './prices.service';
+import { MailService } from 'src/mail/mail.service';
 
-@Controller('prices')
+@Controller('/prices')
 export class PricesController {
   constructor(
-   
     private readonly pricesService: PricesService,
+    private readonly mailService: MailService,
   ) {}
 
+  @Get('/email')
+  async Email() {
+
+    return this.mailService.sendAlertEmail(
+      'receiver@gmail.com',
+      'sender@gmail.com',
+      'coin',
+      45,
+    );
+  }
   @Get('/hourly')
   async getHourlyPrices(@Query('coin') coin: string) {
     const last24Hours = moment().subtract(24, 'hours').toDate();
@@ -28,7 +39,7 @@ export class PricesController {
   async setAlert(
     @Body() alertDto: { chain: string; price: number; email: string },
   ) {
-   return this.pricesService.setAlert(alertDto)
+    return this.pricesService.setAlert(alertDto);
   }
 
   @Get('/swap/rate')

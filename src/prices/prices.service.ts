@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import Moralis from 'moralis';
 import { CoinPrice } from 'src/coin-price/coin-price.entity';
@@ -8,10 +8,12 @@ import { PriceAlert } from './prices.entity';
 
 @Injectable()
 export class PricesService {
+  private readonly logger = new Logger(PricesService.name);
+
   constructor(
     @InjectRepository(CoinPrice)
     private coinPriceRepository: Repository<CoinPrice>,
-     @InjectRepository(PriceAlert) 
+    @InjectRepository(PriceAlert)
     private priceAlertRepository: Repository<PriceAlert>,
   ) {}
 
@@ -57,7 +59,7 @@ export class PricesService {
       );
     }
   }
-  async getHourlyProce(coin,last24Hours) {
+  async getHourlyProce(coin, last24Hours) {
     return this.coinPriceRepository
       .createQueryBuilder('coinPrice')
       .where('coinPrice.coin = :coin', { coin })
@@ -66,10 +68,9 @@ export class PricesService {
       .getMany();
   }
 
-  async setAlert(alertDto){
-     const alert = this.priceAlertRepository.create(alertDto);
+  async setAlert(alertDto) {
+    const alert = this.priceAlertRepository.create(alertDto);
     await this.priceAlertRepository.save(alert);
     return { message: 'Alert set successfully' };
   }
- 
 }

@@ -8,22 +8,19 @@ import { CoinPrice } from './coin-price.entity';
 import Moralis from 'moralis';
 import * as moment from 'moment';
 import { PriceAlert } from 'src/prices/prices.entity';
-import * as sgMail from '@sendgrid/mail';
+import { MailService } from 'src/mail/mail.service';
 
 @Injectable()
 export class CoinPriceService {
   private readonly logger = new Logger(CoinPriceService.name);
 
   constructor(
+    private readonly mailService: MailService,
     @InjectRepository(CoinPrice)
     private coinPriceRepository: Repository<CoinPrice>,
     @InjectRepository(PriceAlert)
     private priceAlertRepository: Repository<PriceAlert>,
-  ) {
-
-      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
-
-  }
+  ) {}
 
   @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
@@ -31,19 +28,19 @@ export class CoinPriceService {
     await this.checkForAlert();
     await this.checkForPriceAlerts();
   }
+
   private async savePrices() {
     this.logger.debug('Fetching coin prices from Moralis API...');
     try {
-      
       const ethPriceResponse = await Moralis.EvmApi.token.getTokenPrice({
         chain: '0x1',
-        address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', 
+        address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2',
       });
 
       // Fetch Polygon price (Chain ID: 0x1 for Polygon mainnet)
       const polygonPriceResponse = await Moralis.EvmApi.token.getTokenPrice({
-        chain: '0x1', 
-        address: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0', 
+        chain: '0x1',
+        address: '0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0',
       });
 
       const ethPrice = ethPriceResponse.raw.usdPrice;
@@ -85,31 +82,18 @@ export class CoinPriceService {
         const percentageIncrease =
           ((latestPrice.price - oldPrice.price) / oldPrice.price) * 100;
         if (percentageIncrease > 3) {
-          await this.sendAlertEmail(coin, percentageIncrease);
+          await this.mailService.sendAlertEmail(
+            '',
+            '',
+            coin,
+            percentageIncrease,
+          );
         }
       }
     }
   }
 
-   private async sendAlertEmail(
-    coin: string,
-    percentageIncrease: number,
-    email: string = 'hyperhire_assignment@hyperhire.in',
-  ) {
-     const msg = {
-        to: email,
-        from: 'hyperhire_assignment@hyperhire.in',
-        subject: `Price Alert: ${coin} has increased by ${percentageIncrease.toFixed(2)}%`,
-        text: `The price of ${coin} has increased by ${percentageIncrease.toFixed(2)}%.`,
-      };
-      await sgMail.send(msg);
-   
-    this.logger.debug(
-      `Alert: ${coin} price has increased by ${percentageIncrease.toFixed(2)}%. Email sent to ${email}`,
-    );
-  }
-
- async checkForPriceAlerts() {
+  async checkForPriceAlerts() {
     try {
       const activeAlerts = await this.priceAlertRepository.find({
         where: { isTriggered: false },
@@ -122,7 +106,17 @@ export class CoinPriceService {
         });
 
         if (latestPrice && latestPrice.price >= alert.priceTarget) {
-          await this.sendAlertEmail(alert.chain, latestPrice.price, alert.email);
+          await this.mailService.sendAlertEmail(
+            alert.email,
+            alert.email,
+            alert.chain,
+            latestPrice.price,
+          );
+          // await this.sendAlertEmail(
+          //   alert.chain,
+          //   latestPrice.price,
+          //   alert.email,
+          // );
           alert.isTriggered = true;
           await this.priceAlertRepository.save(alert);
         }

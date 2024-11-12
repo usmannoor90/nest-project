@@ -5,15 +5,13 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { CoinPrice } from 'src/coin-price/coin-price.entity';
 import { PriceAlert } from './prices.entity';
 import { PricesController } from './prices.controller';
+import { MailService } from 'src/mail/mail.service';
 
 @Module({
-   imports: [
-    TypeOrmModule.forFeature([CoinPrice, PriceAlert]),
-  ],
- 
-  providers: [PricesService],
+  imports: [TypeOrmModule.forFeature([CoinPrice, PriceAlert])],
+
+  providers: [PricesService, MailService],
   controllers: [PricesController],
   // exports: [PricesService],
-  
 })
 export class PricesModule {}
