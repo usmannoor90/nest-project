@@ -8,6 +8,7 @@ import { CoinPrice } from './coin-price.entity';
 import Moralis from 'moralis';
 import * as moment from 'moment';
 import { PriceAlert } from 'src/prices/prices.entity';
+import * as sgMail from '@sendgrid/mail';
 
 @Injectable()
 export class CoinPriceService {
@@ -18,8 +19,11 @@ export class CoinPriceService {
     private coinPriceRepository: Repository<CoinPrice>,
     @InjectRepository(PriceAlert)
     private priceAlertRepository: Repository<PriceAlert>,
-    
-  ) {}
+  ) {
+
+      sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
+  }
 
   @Cron(CronExpression.EVERY_5_MINUTES)
   async handleCron() {
@@ -92,6 +96,13 @@ export class CoinPriceService {
     percentageIncrease: number,
     email: string = 'hyperhire_assignment@hyperhire.in',
   ) {
+     const msg = {
+        to: email,
+        from: 'hyperhire_assignment@hyperhire.in',
+        subject: `Price Alert: ${coin} has increased by ${percentageIncrease.toFixed(2)}%`,
+        text: `The price of ${coin} has increased by ${percentageIncrease.toFixed(2)}%.`,
+      };
+      await sgMail.send(msg);
    
     this.logger.debug(
       `Alert: ${coin} price has increased by ${percentageIncrease.toFixed(2)}%. Email sent to ${email}`,

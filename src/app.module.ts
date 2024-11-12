@@ -11,6 +11,7 @@ import { CoinPrice } from './coin-price/coin-price.entity';
 
 @Module({
   imports: [
+    
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DATABASE_HOST,
