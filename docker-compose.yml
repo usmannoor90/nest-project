@@ -7,14 +7,6 @@ services:
       dockerfile: Dockerfile
     ports:
       - '8000:8000'
-    environment:
-      - DATABASE_HOST=localhost
-      - DATABASE_PORT=5432
-      - DATABASE_USERNAME=postgres
-      - DATABASE_PASSWORD=admin
-      - DATABASE_NAME=coinproce
-      - MOLARIS_API_KEY=yeyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJub25jZSI6IjMzZDkzM2QyLTlmMTEtNGNhMC05OGEyLTczYzc2MDU4ODNkMiIsIm9yZ0lkIjoiNDE1NzczIiwidXNlcklkIjoiNDI3MzEyIiwidHlwZUlkIjoiN2JmMzU4ZTQtNDIwYi00MGQ2LTgzN2ItZGUyMjMyMGQ0MmYxIiwidHlwZSI6IlBST0pFQ1QiLCJpYXQiOjE3MzEzOTI5NjEsImV4cCI6NDg4NzE1Mjk2MX0.sU-fdjGYKM4Cvo7mBgYlxwRJ1xxMld64qUrwJTwgY-w
-
     depends_on:
       - postgres
     volumes:
