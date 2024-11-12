@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity()
+@Entity('price_alert')
 export class PriceAlert {
   @PrimaryGeneratedColumn()
   id: number;

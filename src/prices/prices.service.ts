@@ -5,6 +5,7 @@ import Moralis from 'moralis';
 import { CoinPrice } from 'src/cron-job/cron-job.entity';
 import { Repository } from 'typeorm';
 import { PriceAlert } from './prices.entity';
+import { AlertDto } from 'src/DTO/AlertsDto';
 
 @Injectable()
 export class PricesService {
@@ -24,12 +25,12 @@ export class PricesService {
       // Fetch current ETH and BTC prices from the Moralis API
       const ethPriceResponse = await Moralis.EvmApi.token.getTokenPrice({
         chain: '0x1',
-        address: '0xeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee', // ETH contract address for mainnet
+        address: '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2', // ETH contract address for mainnet
       });
 
       const btcPriceResponse = await Moralis.EvmApi.token.getTokenPrice({
         chain: '0x1',
-        address: '0x4d5fc2e5416e1b9ff733a1c3542aa2e95c8d6f2a', // Replace with BTC address for accurate conversion
+        address: '0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599', // Replace with BTC address for accurate conversion
       });
 
       const ethPriceInUSD = ethPriceResponse.raw.usdPrice;
@@ -59,16 +60,15 @@ export class PricesService {
       );
     }
   }
-  async getHourlyProce(coin, last24Hours) {
+  async getHourlyPrice(coin:string, last24Hours) {
     return this.coinPriceRepository
       .createQueryBuilder('coinPrice')
       .where('coinPrice.coin = :coin', { coin })
-      .andWhere('coinPrice.timestamp >= :last24Hours', { last24Hours })
-      .orderBy('coinPrice.timestamp', 'ASC')
+      .andWhere('coinPrice.createdAt >= :last24Hours', { last24Hours })
+      .orderBy('coinPrice.createdAt', 'ASC')
       .getMany();
   }
-
-  async setAlert(alertDto) {
+  async setAlert(alertDto:AlertDto) {
     const alert = this.priceAlertRepository.create(alertDto);
     await this.priceAlertRepository.save(alert);
     return { message: 'Alert set successfully' };
