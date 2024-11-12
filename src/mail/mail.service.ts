@@ -9,10 +9,10 @@ export class MailService {
   constructor(private readonly configService: ConfigService) {
     this.sesClient = new SESClient({
       credentials: {
-        accessKeyId: 'AASDASFDSFWEF',
-        secretAccessKey: 'oSASWEaaweS1234CV4KmVASDRWRSDCSDSDGWERNSDF4WE',
+        accessKeyId: this.configService.get("AWS_ACCESSKEY"),
+        secretAccessKey: this.configService.get("AWS_SECRET_ACCESSKEY"),
       },
-      region: 'us-east-1',
+      region: this.configService.get("AWS_REGION"),
     });
   }
 
@@ -24,6 +24,7 @@ export class MailService {
   ) => {
     const subject = `Alert: ${coin} Price Increased by ${percentageIncrease.toFixed(2)}%`;
     const text = `The price of ${coin} has increased by ${percentageIncrease.toFixed(2)}% within the past hour.`;
+    
 
     return new SendEmailCommand({
       Destination: {
@@ -55,7 +56,12 @@ export class MailService {
     });
   };
 
-  async sendAlertEmail(reciEmail, senderEmail, coin, price) {
+  async sendAlertEmail(
+    reciEmail: string,
+    senderEmail: string,
+    coin: string,
+    price: number,
+  ) {
     const sendEmailCommand = this.createSendEmailCommand(
       reciEmail || 'receiver@gmail.com',
       senderEmail || 'sender@gmail.com',
