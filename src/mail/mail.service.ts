@@ -22,8 +22,8 @@ export class MailService {
     coin: string,
     percentageIncrease: number,
   ) => {
-    const subject = `Alert: ${coin} Price Increased by ${percentageIncrease.toFixed(2)}%`;
-    const text = `The price of ${coin} has increased by ${percentageIncrease.toFixed(2)}% within the past hour.`;
+    const subject = `Alert: ${coin} Price Increased by ${percentageIncrease}%`;
+    const text = `The price of ${coin} has increased by ${percentageIncrease}% within the past hour.`;
 
     return new SendEmailCommand({
       Destination: {
@@ -69,7 +69,6 @@ export class MailService {
     );
 
     try {
-      
       return await this.sesClient.send(sendEmailCommand);
     } catch (e) {
       console.error('Failed to send email.');

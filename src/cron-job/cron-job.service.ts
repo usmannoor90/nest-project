@@ -32,7 +32,7 @@ export class CronJobService {
   }
 
   private async savePrices() {
-    this.logger.debug('Fetching coin prices from Moralis API...');
+ 
     try {
       const ethPriceResponse = await Moralis.EvmApi.token.getTokenPrice({
         chain: '0x1',
@@ -60,7 +60,7 @@ export class CronJobService {
 
       await this.coinPriceRepository.save([ethPriceEntity, polygonPriceEntity]);
 
-      this.logger.debug('Coin prices saved to database successfully.');
+      
     } catch (error) {
       this.logger.error('Error fetching coin prices:', error.message);
     }
@@ -86,7 +86,7 @@ export class CronJobService {
         if (percentageIncrease > 3) {
           await this.mailService.sendAlertEmail(
             'hyperhire_assignment@hyperhire.in',
-            this.configService.get("SENDER_MAIL"),
+            this.configService.get('SENDER_MAIL'),
             coin,
             percentageIncrease,
           );
@@ -101,19 +101,24 @@ export class CronJobService {
         where: { isTriggered: false },
       });
 
+     
+
       for (const alert of activeAlerts) {
         const latestPrice = await this.coinPriceRepository.findOne({
           where: { coin: alert.chain },
           order: { createdAt: 'DESC' },
         });
 
+     
+
         if (latestPrice && latestPrice.price >= alert.priceTarget) {
           await this.mailService.sendAlertEmail(
             alert.email,
-            this.configService.get("SENDER_MAIL"),
+            this.configService.get('SENDER_MAIL'),
             alert.chain,
             latestPrice.price,
           );
+
 
           alert.isTriggered = true;
           await this.priceAlertRepository.save(alert);
